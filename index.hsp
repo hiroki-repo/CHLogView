@@ -3,9 +3,19 @@
 	;
 #define DIID_DWebBrowserEvents2     "{34A715A0-6587-11D0-924A-0020AFC7AC4D}"
 #define DISPID_NAVIGATECOMPLETE2    252
+#uselib "atl.dll"
+#func AtlAxWinInit "AtlAxWinInit"
+#func AtlAxGetHost "AtlAxGetHost" int, var
+#func AtlAxGetControl "AtlAxGetControl" int, var
+
+#usecom IAxWinAmbientDispatch "{B6EA2051-048A-11D1-82B9-00C04FB9942E}"
+#uselib "user32.dll"
+#func PeekMessageA "PeekMessageA" var,int,int,int,int
+
 #epack "url.bin"
 	title "CYBERHOME NAPT Log Viewer"
 	cls 1
+	sdim msgarx,28
 	sdim url,512
 	bload "url.bin",url
 	randomize lpeek(url,508)
@@ -25,14 +35,18 @@
 	pos 0,48*/
 	axobj ie, "Shell.Explorer.2",640,480//-48
 	num=stat
-	comevent ie_event, ie, "{34A715A0-6587-11D0-924A-0020AFC7AC4D}",*event	; DIID_DWebBrowserEvents2     
+	ieObjHWND = objinfo(num, 2)
+	comevent ie_event, ie, "{34A715A0-6587-11D0-924A-0020AFC7AC4D}",*event	; DIID_DWebBrowserEvents2
 	ie->"Navigate" url
 *main
-	stop
+	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
+	await
+	goto *main
+	//stop
 *event
 	;	COMƒCƒxƒ“ƒgˆ—
 	dispid = comevdisp(ie_event)
-	if dispid = DISPID_NAVIGATECOMPLETE2 : gosub *OnNavigateComplete2
+	if dispid = DISPID_NAVIGATECOMPLETE2 : goto *OnNavigateComplete2
 	return
 
 *OnNavigateComplete2
