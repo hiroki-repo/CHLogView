@@ -11,6 +11,7 @@
 #usecom IAxWinAmbientDispatch "{B6EA2051-048A-11D1-82B9-00C04FB9942E}"
 #uselib "user32.dll"
 #func PeekMessageA "PeekMessageA" var,int,int,int,int
+#func PostMessageA "PostMessageA" int,int,int,int
 
 #epack "url.bin"
 	title "CYBERHOME NAPT Log Viewer"
@@ -37,7 +38,11 @@
 	num=stat
 	ieObjHWND = objinfo(num, 2)
 	comevent ie_event, ie, "{34A715A0-6587-11D0-924A-0020AFC7AC4D}",*event	; DIID_DWebBrowserEvents2
+	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
 	ie->"Navigate" url
+	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
+	PostMessageA ieObjHWND,0x204,0x0002,0
+	PostMessageA ieObjHWND,0x205,0x0000,0
 *main
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
 	await
@@ -47,6 +52,7 @@
 	;	COMƒCƒxƒ“ƒgˆ—
 	dispid = comevdisp(ie_event)
 	if dispid = DISPID_NAVIGATECOMPLETE2 : goto *OnNavigateComplete2
+	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
 	return
 
 *OnNavigateComplete2
@@ -56,6 +62,7 @@
 	name = pDoc("Title")
 	title "CYBERHOME NAPT Log Viewer - "+name
 	delcom pDoc
+	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
 	return
 *wow
 	ie->"Navigate" url
