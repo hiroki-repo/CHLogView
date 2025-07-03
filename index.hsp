@@ -14,6 +14,8 @@
 #func PostMessageA "PostMessageA" int,int,int,int
 
 #epack "url.bin"
+	bgscr 0,ginfo(20),ginfo(21),,0,0,,
+	gsel 0,2
 	title "CYBERHOME NAPT Log Viewer"
 	cls 1
 	sdim msgarx,28
@@ -32,9 +34,12 @@
 	objsize 120,24
 	pos 520,24:button "ˆÚ“®",*wow
 	pos 400,24:button "i‚Þ",*go_f
-	pos 280,24:button "–ß‚é",*go_b
-	pos 0,48*/
-	axobj ie, "Shell.Explorer.2",640,480//-48
+	pos 280,24:button "–ß‚é",*go_b*/
+	objsize 120,48
+	pos ginfo(12)-120,0:button "Quit",*quit
+	pos 0,0:mes "CYBERHOME Log View"
+	pos 0,48
+	axobj ie, "Shell.Explorer.2",ginfo(12),ginfo(13)-48
 	num=stat
 	ieObjHWND = objinfo(num, 2)
 	comevent ie_event, ie, "{34A715A0-6587-11D0-924A-0020AFC7AC4D}",*event	; DIID_DWebBrowserEvents2
@@ -43,6 +48,7 @@
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
 *main
 	repeat 10
+	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
 	loop
 	await
@@ -73,3 +79,7 @@
 *go_b
 	ie->"GoBack"
 	goto *main
+
+*quit
+	end
+	
