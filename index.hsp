@@ -41,10 +41,10 @@
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
 	ie->"Navigate" url
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
-	PostMessageA ieObjHWND,0x204,0x0002,0
-	PostMessageA ieObjHWND,0x205,0x0000,0
 *main
+	repeat 10
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
+	loop
 	await
 	goto *main
 	//stop
