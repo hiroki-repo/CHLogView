@@ -42,7 +42,7 @@ data4send="Data Buffer"
 icmphndl=IcmpCreateFile()
 icmpresult=IcmpSendEcho(icmphndl,ipaddrs,varptr(data4send),varsize(data4send),varptr(ipoption),varptr(receivedata),varsize(receivedata),3500)
 IcmpCloseHandle icmphndl
-if (sameipaddr=1 & lpeek(receivedata,0)=lpeek(ipaddrs,0))=0{
+if (lpeek(receivedata,0)=lpeek(ipaddrs,0))=0{
 	bload "url.bin",url
 	randomize lpeek(url,508)
 	repeat 508
