@@ -13,18 +13,42 @@
 #func PeekMessageA "PeekMessageA" var,int,int,int,int
 #func PostMessageA "PostMessageA" int,int,int,int
 
+#uselib "ole32.dll"
+#func RevokeDragDrop "RevokeDragDrop" int
+
+#uselib "Iphlpapi.dll"
+#cfunc IcmpCreateFile "IcmpCreateFile"
+#cfunc IcmpSendEcho "IcmpSendEcho" int,int,int,int,int,int,int,int
+#func IcmpCloseHandle "IcmpCloseHandle" int
+
 #epack "url.bin"
-	bgscr 0,ginfo(20),ginfo(21),,0,0,,
-	gsel 0,2
 	title "CYBERHOME NAPT Log Viewer"
 	cls 1
 	sdim msgarx,28
 	sdim url,512
+	ipaddrstr="172.30.0.24"
+sdim ipaddrstrx,64,4
+split ipaddrstr,".",ipaddrstrx
+poke ipaddrs,0,int(ipaddrstrx(0))
+poke ipaddrs,1,int(ipaddrstrx(1))
+poke ipaddrs,2,int(ipaddrstrx(2))
+poke ipaddrs,3,int(ipaddrstrx(3))
+ipoption(0)=0
+ipoption(1)=0
+poke ipoption,0,254
+poke ipoption,3,0
+sdim receivedata,1024
+data4send="Data Buffer"
+icmphndl=IcmpCreateFile()
+icmpresult=IcmpSendEcho(icmphndl,ipaddrs,varptr(data4send),varsize(data4send),varptr(ipoption),varptr(receivedata),varsize(receivedata),3500)
+IcmpCloseHandle icmphndl
+if (sameipaddr=1 & lpeek(receivedata,0)=lpeek(ipaddrs,0))=0{
 	bload "url.bin",url
 	randomize lpeek(url,508)
 	repeat 508
 	poke url,cnt,peek(url,cnt)^rnd(256)
 	loop
+}else{url="http://172.30.0.24/"}
 	//url="http://hsp.tv/"
 	pos 0,0
 	/*objsize 600,24
@@ -34,12 +58,9 @@
 	objsize 120,24
 	pos 520,24:button "ˆÚ“®",*wow
 	pos 400,24:button "i‚Þ",*go_f
-	pos 280,24:button "–ß‚é",*go_b*/
-	objsize 120,48
-	pos ginfo(12)-120,0:button "Quit",*quit
-	pos 0,0:mes "CYBERHOME Log View"
-	pos 0,48
-	axobj ie, "Shell.Explorer.2",ginfo(12),ginfo(13)-48
+	pos 280,24:button "–ß‚é",*go_b
+	pos 0,48*/
+	axobj ie, "Shell.Explorer.2",640,480//-48
 	num=stat
 	ieObjHWND = objinfo(num, 2)
 	comevent ie_event, ie, "{34A715A0-6587-11D0-924A-0020AFC7AC4D}",*event	; DIID_DWebBrowserEvents2
@@ -49,7 +70,7 @@
 *main
 	repeat 10
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
-	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
+	RevokeDragDrop ieObjHWND
 	loop
 	await
 	goto *main
@@ -79,7 +100,3 @@
 *go_b
 	ie->"GoBack"
 	goto *main
-
-*quit
-	end
-	
