@@ -70,7 +70,6 @@ if (lpeek(receivedata,0)=lpeek(ipaddrs,0))=0{
 *main
 	repeat 10
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
-	RevokeDragDrop ieObjHWND
 	loop
 	await
 	goto *main
