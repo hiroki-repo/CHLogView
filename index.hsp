@@ -66,9 +66,7 @@ if (lpeek(receivedata,0)=lpeek(ipaddrs,0))=0{
 	comevent ie_event, ie, "{34A715A0-6587-11D0-924A-0020AFC7AC4D}",*event	; DIID_DWebBrowserEvents2
 	ie->"Navigate" url
 *main
-	repeat 10
 	PeekMessageA msgarx,ieObjHWND,0x204,0x206,0x1
-	loop
 	await
 	goto *main
 	//stop
